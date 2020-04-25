@@ -7,7 +7,7 @@ l = []
 for i in range(0,x):
     l.append(input("Entrer chaine de charactere " + str(i) + " :"))
 
-f = open("data.txt", mode="a")
+f = open("Episode 2/data.txt", mode="a")
 
 for y in l:
     f.write(y + '\n')
@@ -17,7 +17,7 @@ f.close()
 #  22
     # Ecrire du code qui lit le contenu du fichier data.txt et vérifie pour chaque ligne si c'est un email
     # (présence de @ et de .com à la fin)
-f = open("data.txt", mode="r")
+f = open("Episode 2/data.txt", mode="r")
 
 for i in f:
     if("@" in i and ".com" in i):
