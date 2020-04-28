@@ -2,8 +2,6 @@ import hashlib
 import xlrd
 import string
 import random
-# from collections import deque
-
 
 alphabet = list(string.ascii_letters)
 
@@ -83,8 +81,6 @@ def testConcatNumName(myNames,myAnimals,myCryptedPasswords):
                     answers.write(finalRes + "\n")
     answers.close()
     return decryptedPasswords
-
-# testing = myPrenoms[inName][0].upper(); inName = myNames.index(name)
     
 def testConcatAnimals(myNames,myAnimals,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
@@ -164,7 +160,6 @@ def testChanging(myNames,myAnimals,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-
 def testDate(myNames,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
     decryptedPasswords = []
@@ -209,7 +204,6 @@ def testBirthday(myNames,myPrenoms,myCryptedPasswords, myAlphabet):
                         answers.write(finalRes + "\n")
     answers.close()
     return decryptedPasswords
-
 
 def testMultiple(myNames,myPrenoms,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
@@ -299,7 +293,6 @@ def testConcatAnimalsName(myAnimals,myNames,myPrenoms,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-
 def testReverse(myNames,myPrenoms,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
     decryptedPasswords = []
@@ -329,7 +322,6 @@ def testReversePlus(myPrenoms,myNames,myCryptedPasswords):
                         pre = pre.replace(voy,"")
 
                     testing = wrd + pre
-                    print(testing)
                     result = hashlib.md5(testing.encode())
                     if(ps == result.hexdigest()):
                         finalRes = myNames[inPass] + " : " + testing + " password=" + ps
@@ -338,28 +330,6 @@ def testReversePlus(myPrenoms,myNames,myCryptedPasswords):
                 
     answers.close()
     return decryptedPasswords
-
-def testNameDouble(myNames,myAlphabet,myCryptedPasswords):
-    answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    decryptedPasswords = []
-    for ps in myCryptedPasswords:
-        inPass = myCryptedPasswords.index(ps)
-        for let in myAlphabet:
-            for let2 in myAlphabet:
-                for let3 in myAlphabet:
-                    for let4 in myAlphabet:
-                        for let5 in myAlphabet:
-                            for let6 in myAlphabet:
-                                testing = let + let2 + let3 + let4 + let5 + let6
-                                # print(testing)
-                                result = hashlib.md5(testing.encode())
-                                if(ps == result.hexdigest()):
-                                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                                    decryptedPasswords.append(finalRes)
-                                    answers.write(finalRes + "\n")
-    answers.close()
-    return decryptedPasswords
-
 
 def testVoyellePrenom(myPrenoms,myNames,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
@@ -378,7 +348,6 @@ def testVoyellePrenom(myPrenoms,myNames,myCryptedPasswords):
                         pre = pre.replace(x,str(nb))
                         x = str(nb)
                         testing = pre
-                        print(testing)
                         result = hashlib.md5(testing.encode())
                         if(ps == result.hexdigest()):
                             finalRes = myNames[inPass] + " : " + testing + " password=" + ps
@@ -388,38 +357,6 @@ def testVoyellePrenom(myPrenoms,myNames,myCryptedPasswords):
                 
     answers.close()
     return decryptedPasswords
-
-# name = name.lower()
-#             cmptVoy = []
-#             counter = 0
-#             for x in voyelle:
-#                 if(x in name):
-#                     cmptVoy.append(x)
-#                     counter += 1
-#                 else:
-#                     pass
-#             cmp = 0
-#             cmpVoyUse = 0
-#             cmptVoy = cmptVoy*(counter**9)
-#             for y in cmptVoy:
-#                 p = y
-#                 for nb in myNumbers:
-#                     testing = name.replace(str(p), str(nb))
-#                     p = str(nb)
-#                     print(testing)
-#                     result = hashlib.md5(testing.encode())
-#                     if(ps == result.hexdigest()):
-#                         finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-#                         decryptedPasswords.append(finalRes)
-#                         answers.write(finalRes + "\n")
-#                     cmp += 1
-#                     if(cmp % 9 == 0):
-#                         name = name.replace(str(p), str(cmpVoyUse))
-#                         p = str(cmpVoyUse)
-#                         cmpVoyUse += 1
-#                         if(cmpVoyUse % counter == 0):
-#                             name = name.replace(str(p), str(cmpVoyUse)) 
-
 
 def testAnimalsCapitalize(myNames,myAnimals,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
@@ -444,13 +381,6 @@ def testNames(myNames,myPrenoms,myCryptedPasswords):
         inPass = myCryptedPasswords.index(ps)
         for pre in myPrenoms:
             inPre = myPrenoms.index(pre)
-            # pre =  pre.lower() + myNames[inPre].lower()
-            # pre =  pre.lower() + myNames[inPre].upper()
-            # pre =  pre.upper() + myNames[inPre].lower()
-                        
-            # pre = myNames[inPre].lower() + pre.lower()
-            # pre = myNames[inPre].upper() + pre.lower()
-            # pre = myNames[inPre].lower() + pre.upper()
             pre = myNames[inPre].upper() + pre.upper()
             for x in pre:
                 if(x in voyelle):
@@ -458,7 +388,6 @@ def testNames(myNames,myPrenoms,myCryptedPasswords):
                 else:
                     pass
                 testing = pre
-                print(testing)
                 result = hashlib.md5(testing.encode())
                 if(ps == result.hexdigest()):
                     finalRes = myNames[inPass] + " : " + testing + " password=" + ps
@@ -480,21 +409,15 @@ def testNames(myNames,myPrenoms,myCryptedPasswords):
 # print(testReverse(noms,prenoms,cryptedPasswords))
 # print(testVoyelle(noms,prenoms,cryptedPasswords))
 
-
-# print(testNames(noms,prenoms,cryptedPasswords))
-
-# print(testReversePlus(prenoms,noms,cryptedPasswords))
-
-# print(testNameDouble(noms,alphabet,cryptedPasswords))
-
-print(testVoyellePrenom(prenoms,noms,cryptedPasswords))
-
 # Non fonctionnel:
+# print(testVoyellePrenom(prenoms,noms,cryptedPasswords))
 
 # Sans resultat :
 # print(testConcatNumName(noms,animals,cryptedPasswords))
 # print(testDate(cryptedPasswords))
 # print(testConcatAnimalsName(animals,noms,prenoms,cryptedPasswords))
+# print(testNames(noms,prenoms,cryptedPasswords))
+# print(testReversePlus(prenoms,noms,cryptedPasswords))
 
 # tigreescargot testConcatAnimals
 # porcblaireau testConcatAnimals
