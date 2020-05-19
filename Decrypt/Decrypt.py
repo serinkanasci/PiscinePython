@@ -308,25 +308,22 @@ def testReverse(myNames,myPrenoms,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-def testReversePlus(myPrenoms,myNames,myCryptedPasswords):
+def testReversePlus(myPrenoms,myNames,myAnimals,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    voyelle = ["A", "E", "I", "O", "U", "Y","a", "e", "i", "o", "u", "y"]
     decryptedPasswords = []
     for ps in myCryptedPasswords:
         inPass = myCryptedPasswords.index(ps)
-        for wrd in myNames:
-            for pre in myPrenoms:
-                for voy in voyelle:
-                    while(voy in wrd or voy in pre):
-                        wrd = wrd.replace(voy,"")
-                        pre = pre.replace(voy,"")
-
-                    testing = wrd + pre
-                    result = hashlib.md5(testing.encode())
-                    if(ps == result.hexdigest()):
-                        finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                        decryptedPasswords.append(finalRes)
-                        answers.write(finalRes + "\n")
+        for name in myNames:
+            inName = myNames.index(name)
+            for animal in myAnimals:
+                testing = name[::-1].lower() + myPrenoms[inName][::-1].lower()
+                result = hashlib.md5(testing.encode())
+                if(ps == result.hexdigest()):
+                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
+                    decryptedPasswords.append(finalRes)
+                    answers.write(finalRes + "\n")
+    answers.close()
+    return decryptedPasswords
                 
     answers.close()
     return decryptedPasswords
@@ -418,26 +415,4 @@ def testNames(myNames,myPrenoms,myCryptedPasswords):
 # print(testConcatAnimalsName(animals,noms,prenoms,cryptedPasswords))
 # print(testNames(noms,prenoms,cryptedPasswords))
 # print(testReversePlus(prenoms,noms,cryptedPasswords))
-
-# tigreescargot testConcatAnimals
-# porcblaireau testConcatAnimals
-# raugajjaguar testAnimalsDouble
-# WPoutine1952 testBirthday
-# adams3103 testMultiple
-# sarah1978 testMultiple
-# chacal testAnimals
-# chat testAnimals
-# ToRtUe testChanging
-
-
-# Pas fini :
-# D'autres aiment les animaux et ont dérivés leurs mots de passe de ceux-ci.
-# Certains changent toutes les voyelles par un nombre et mettent le tout en majuscules
-
-# Fini :
-# d'autres ont rajoutés des nombres devant ou derrière (max 3), et mis la première lettre ou pas en majuscule.
-# prénom ou nom,nombres rajoutés (maximum 4). Par exemple, mettre une lettre devant son nom, avant de rajouter à la fin son année de naissance.
-# Certains prennent le nom d'un animal, l'ont mis à l'envers, et l'ont dédoublé.
-# Certains seulement concaténent 2 animaux...
-
 
