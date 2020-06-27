@@ -2,6 +2,7 @@ import hashlib
 import xlrd
 import string
 import random
+import itertools
 
 alphabet = list(string.ascii_letters)
 
@@ -46,41 +47,6 @@ for i in f:
     animals.append(animal[0])
 
 f.close()
-
-def testConcatNumName(myNames,myAnimals,myCryptedPasswords):
-    answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    decryptedPasswords = []
-    for ps in myCryptedPasswords:
-        inPass = myCryptedPasswords.index(ps)
-        for name in myNames:
-            for an in myAnimals:
-                tot = name + an
-                totLen = len(tot)
-                cmpt = 0
-                cmptName = 0
-                cmptAn = 0
-                testing = ""
-                while cmpt != totLen:
-                    if(cmpt%2 == 0):
-                        try:
-                            testing += name[cmptName]
-                            cmptName += 1
-                        except IndexError:
-                            cmptName += 1
-                    else:
-                        try:
-                            testing += an[cmptAn]
-                            cmptAn += 1
-                        except IndexError:
-                            cmptAn += 1
-                    cmpt += 1                
-                result = hashlib.md5(testing.encode())
-                if(ps == result.hexdigest()):
-                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-    answers.close()
-    return decryptedPasswords
     
 def testConcatAnimals(myNames,myAnimals,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
@@ -222,77 +188,6 @@ def testMultiple(myNames,myPrenoms,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-def testVoyelle(myNames,myPrenoms,myCryptedPasswords):
-    answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    voyelle = ["a", "e", "i", "o", "u", "y"]
-    myNumbers = [a + 1 for a in range(0,9)]
-    decryptedPasswords = []
-    for ps in myCryptedPasswords:
-        inPass = myCryptedPasswords.index(ps)
-        for name in myPrenoms:
-            name = name.lower()
-            for y in voyelle:
-                for nb in myNumbers:
-                    name = name.replace(y, str(nb))
-                    testing = name
-                    y = str(nb)
-                    result = hashlib.md5(testing.encode())
-                    if(ps == result.hexdigest()):
-                        finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                        decryptedPasswords.append(finalRes)
-                        answers.write(finalRes + "\n")      
-    answers.close()
-    return decryptedPasswords
-
-def testConcatAnimalsName(myAnimals,myNames,myPrenoms,myCryptedPasswords):
-    answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    decryptedPasswords = []
-    for ps in myCryptedPasswords:
-        inPass = myCryptedPasswords.index(ps)
-        for an in myAnimals:
-            for nom in myNames:
-                testing = nom.lower() + an.upper()
-                minTest=""
-                cmpt = 0
-                for s in testing:
-                    if(cmpt%2 == 0):
-                        minTest += s.upper()
-                    else:
-                        minTest += s.lower()
-                    cmpt += 1
-                result = hashlib.md5(minTest.encode())
-                otherResult = hashlib.md5(testing.encode())
-                if(ps == result.hexdigest()):
-                    finalRes = minTest + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-                elif(ps == otherResult.hexdigest()):
-                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-            for pr in myPrenoms:
-                testing = pr.lower() + an.upper()
-                minTest=""
-                cmpt = 0
-                for s in testing:
-                    if(cmpt%2 == 0):
-                        minTest += s.upper()
-                    else:
-                        minTest += s.lower()
-                    cmpt += 1
-                result = hashlib.md5(minTest.encode())
-                otherResult = hashlib.md5(testing.encode())
-                if(ps == result.hexdigest()):
-                    finalRes = minTest + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-                elif(ps == otherResult.hexdigest()):
-                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-    answers.close()
-    return decryptedPasswords
-
 def testReverse(myNames,myPrenoms,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
     decryptedPasswords = []
@@ -308,50 +203,76 @@ def testReverse(myNames,myPrenoms,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-def testReversePlus(myPrenoms,myNames,myAnimals,myCryptedPasswords):
+def permute_single_index(word, index):
+    permutations = []
+    word_left = word[0:index]
+    word_right = word[index+1:]
+    for i in reversed(range(10)):
+        permutations.append(f"{word_left}{i}{word_right}")
+    return permutations
+
+
+def permuteVoyellePrenomUp(pre):
+    voyelle = ["A", "E", "I", "O", "U", "Y"]
+    upper_pre = pre.upper()
+    replace_indexes = [i for i, x in enumerate(upper_pre) if x in voyelle]
+
+    permutations = [upper_pre]
+
+    for ri in replace_indexes:
+        new_permutations = []
+        for word in permutations:
+            new_permutations += permute_single_index(word, ri)
+        permutations += new_permutations
+
+    return permutations
+
+def permuteVoyellePrenomLow(pre):
+    voyelle = ["a", "e", "i", "o", "u", "y"]
+    upper_pre = pre.lower()
+    replace_indexes = [i for i, x in enumerate(upper_pre) if x in voyelle]
+
+    permutations = [upper_pre]
+
+    for ri in replace_indexes:
+        new_permutations = []
+        for word in permutations:
+            new_permutations += permute_single_index(word, ri)
+        permutations += new_permutations
+
+    return permutations
+
+def testVoyellePrenomUp(myPrenoms,myNames,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
     decryptedPasswords = []
     for ps in myCryptedPasswords:
         inPass = myCryptedPasswords.index(ps)
-        for name in myNames:
-            inName = myNames.index(name)
-            for animal in myAnimals:
-                testing = name[::-1].lower() + myPrenoms[inName][::-1].lower()
+        for pre in myPrenoms:
+            pre = permuteVoyellePrenomUp(pre)
+            for testing in pre:        
                 result = hashlib.md5(testing.encode())
                 if(ps == result.hexdigest()):
                     finalRes = myNames[inPass] + " : " + testing + " password=" + ps
                     decryptedPasswords.append(finalRes)
                     answers.write(finalRes + "\n")
-    answers.close()
-    return decryptedPasswords
-                
+                            
     answers.close()
     return decryptedPasswords
 
-def testVoyellePrenom(myPrenoms,myNames,myCryptedPasswords):
+def testVoyellePrenomLow(myPrenoms,myNames,myCryptedPasswords):
     answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    voyelle = ["A", "E", "I", "O", "U", "Y"]
     decryptedPasswords = []
     for ps in myCryptedPasswords:
         inPass = myCryptedPasswords.index(ps)
-        myNumbers = [a + 1 for a in range(-1,9)]
-        myNumbers.reverse()
         for pre in myPrenoms:
-            pre = pre.upper()
-            myNumbers = rotate(myNumbers,1)
-            for x in pre:
-                if(x in voyelle):
-                    for nb in myNumbers:
-                        pre = pre.replace(x,str(nb))
-                        x = str(nb)
-                        testing = pre
-                        result = hashlib.md5(testing.encode())
-                        if(ps == result.hexdigest()):
-                            finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                            decryptedPasswords.append(finalRes)
-                            answers.write(finalRes + "\n")
-                        
-                
+            pre = permuteVoyellePrenomLow(pre)
+            for testing in pre:        
+                result = hashlib.md5(testing.encode())
+                if(ps == result.hexdigest()):
+                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
+                    decryptedPasswords.append(finalRes)
+                    answers.write(finalRes + "\n")
+                            
     answers.close()
     return decryptedPasswords
 
@@ -370,31 +291,6 @@ def testAnimalsCapitalize(myNames,myAnimals,myCryptedPasswords):
     answers.close()
     return decryptedPasswords
 
-def testNames(myNames,myPrenoms,myCryptedPasswords):
-    answers = open("Decrypt/passwords.txt", mode="a",encoding="utf-8")
-    voyelle = ["A", "E", "I", "O", "U", "Y","a","e","i","o","u","y"]
-    decryptedPasswords = []
-    for ps in myCryptedPasswords:
-        inPass = myCryptedPasswords.index(ps)
-        for pre in myPrenoms:
-            inPre = myPrenoms.index(pre)
-            pre = myNames[inPre].upper() + pre.upper()
-            for x in pre:
-                if(x in voyelle):
-                    pre = pre.replace(x,'')
-                else:
-                    pass
-                testing = pre
-                result = hashlib.md5(testing.encode())
-                if(ps == result.hexdigest()):
-                    finalRes = myNames[inPass] + " : " + testing + " password=" + ps
-                    decryptedPasswords.append(finalRes)
-                    answers.write(finalRes + "\n")
-                        
-                
-    answers.close()
-    return decryptedPasswords
-
 # Fonctionnel:
 # print(testChanging(noms,animals,cryptedPasswords))
 # print(testAnimals(noms,animals,cryptedPasswords))
@@ -405,14 +301,8 @@ def testNames(myNames,myPrenoms,myCryptedPasswords):
 # print(testBirthday(noms,prenoms,cryptedPasswords,alphabet))
 # print(testReverse(noms,prenoms,cryptedPasswords))
 # print(testVoyelle(noms,prenoms,cryptedPasswords))
-
-# Non fonctionnel:
-# print(testVoyellePrenom(prenoms,noms,cryptedPasswords))
+# print(testVoyellePrenomUp(prenoms,noms,cryptedPasswords))
+# print(testVoyellePrenomLow(prenoms,noms,cryptedPasswords))
 
 # Sans resultat :
-# print(testConcatNumName(noms,animals,cryptedPasswords))
 # print(testDate(cryptedPasswords))
-# print(testConcatAnimalsName(animals,noms,prenoms,cryptedPasswords))
-# print(testNames(noms,prenoms,cryptedPasswords))
-# print(testReversePlus(prenoms,noms,cryptedPasswords))
-

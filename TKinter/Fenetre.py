@@ -33,10 +33,10 @@ class GameMenu():
         self.saisie.set("")
         file.close()
 
-    # def EnterScore():
-    #     file = open("Game.txt","a") 
-    #     file.write(score.get() + "\n")
-    #     file.close()
+    def EnterScore(self, score):
+        file = open("Game.txt","a") 
+        file.write(str(score) + "\n")
+        file.close()
 
     def GetTopFive(self):
         data = pd.read_csv('Game.txt', sep="-", header=None)
@@ -57,37 +57,49 @@ class GameMenu():
         self.master.deiconify()
 
     def LaunchGame(self):
-        MyGame = Toplevel(self.master)
-        Game(MyGame)
+        MyGame = Toplevel()
+        Game(MyGame, self)
 
 class Game():
-    def __init__(self, master):
+    def __init__(self, master, UpperWindow):
         self.master = master
-        self.master.geometry("500x135")
+        self.master.geometry("805x300")
+        self.score = 0
 
-        F1 = Frame(self.master, bg='grey', width=450, height=50, pady=3)
-        # F2 = Frame(self.master, bg='white', width=450, height=50, pady=3)
-        # F3 = Frame(self.master, bg='grey', width=450, height=50, pady=3)
-        # F4 = Frame(self.master, bg='white', width=450, height=50, pady=3)     
-
-        model_label = Label(F1, text="Model")
-        model_label.grid(row=0, rowspan=3, columnspan=3)
-            
-            
-        # Label(F1, text="").grid(row = 0, column = 0, columnspan = 10, rowspan = 5)
-        # Label(F2, text="", bg = 'white').grid(row = 5, column = 0, columnspan = 10, rowspan = 5)
-        # Label(F3, text="", bg = 'grey').grid(row = 10, column = 0, columnspan = 10, rowspan = 5)
-        # Label(F4, text="", bg = 'white').grid(row = 15, column = 0, columnspan = 10, rowspan = 5)
-
-        # self.img = Image.open("skater.jpg") 
-        # self.img = self.img.resize((10, 10), Image.ANTIALIAS)
-        # self.pic = ImageTk.PhotoImage(self.img) 
+        F1 = Frame(self.master, bg='grey', width=800, height=50, pady=0)
+        F2 = Frame(self.master, bg='white', width=800, height=50, pady=0)
+        F3 = Frame(self.master, bg='grey', width=800, height=50, pady=0)
+        F4 = Frame(self.master, bg='white', width=800, height=50, pady=0)
         
-        # self.canv = Canvas()
-        # self.canv.create_image(0,0, image=self.pic)
-        # self.canv.grid(row = 0, column = 0, columnspan = 5, rowspan = 3)
-        # self.master.show()
+        F1.grid(row = 0, column = 0, columnspan = 100, rowspan = 5)
+        F2.grid(row = 5, column = 0, columnspan = 100, rowspan = 5)
+        F3.grid(row = 10, column = 0, columnspan = 100, rowspan = 5)
+        F4.grid(row = 15, column = 0, columnspan = 100, rowspan = 5)
 
+        self.Start = Button(self.master, text="START")
+        self.Exit = Button(self.master, text="EXIT", command=UpperWindow.combine_funcs(UpperWindow.show,self.master.destroy,UpperWindow.EnterScore(0)))
+
+        self.Exit.grid(row = 25, column = 45)
+        self.Start.grid(row = 25, column = 55)
+
+        self.master.img = Image.open("fire-truck.png") 
+        self.master.img = self.master.img.resize((50, 50), Image.ANTIALIAS)
+        self.master.pict = ImageTk.PhotoImage(self.master.img) 
+        
+        self.master.canv = Canvas() 
+        self.master.canv.create_image(180,150, image=self.master.pict)
+
+        # self.master.canv.place(x = 10, y = 10)
+        self.master.canv.grid(row = 28, column = 50)
+        # self.canv.grid(row = 0, column = 0, columnspan = 5, rowspan = 3)
+
+
+    # def sendEnnemy(self, alive):
+    #     if(alive == 1):
+    #         self.score += 1
+    #     else:
+    #         alive = 0
+    #         UpperWindow.EnterScore(self.score)
 
 class Main():
     fen = Tk()
